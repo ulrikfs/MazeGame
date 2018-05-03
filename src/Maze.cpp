@@ -70,7 +70,7 @@ public:
 
   void set_player_location() {
     if (grid[player.y][player.x] == '&')
-      delay_fire(10);
+      delay_fire(9);
 
     grid[player.y][player.x] = 'p';
 
@@ -99,7 +99,6 @@ int main() {
 
   bool three = true;
   int expand = 3;
-
 
 
   char input;
