@@ -34,6 +34,7 @@ public:
 
 class Maze {
 public:
+  int _running = false;
   vector<vector<char> > grid;
   person player;
   bool done = false;
@@ -103,6 +104,23 @@ int main() {
 
   char input;
   while (game.done == false && cin >> input && input != 'q') {
+
+    if ( !game._running ){
+      do {
+        cout << "Welcome to the Maze Game\n";
+        cout << "1. Start Game\n";
+        cout << "2. Change Difficulty\n";
+        cout << "3. Quit\n";
+
+        switch(input) {
+          case 1: game._running = true;
+                  break;
+          case 2: break;
+          case 3: exit(0);
+        }
+      } while (cin >> input && input != 'q');
+    }
+
     if (input == 'w') {
       // Move the player up.
       game.player_up();
