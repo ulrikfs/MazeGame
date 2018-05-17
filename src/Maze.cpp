@@ -41,13 +41,8 @@ public:
   bool lose = false;
   int _fireDelay = 0;
 
-  Maze(int dimension) {
-    grid.resize(dimension);
-    for (auto& row : grid) {
-      row.resize(dimension);
-    }
-
-    initialize_grid();
+  Maze() {
+    resize_grid(40);
   }
 
   void player_right();
@@ -74,9 +69,6 @@ public:
       delay_fire(9);
 
     grid[player.y][player.x] = 'p';
-
-
-    print_grid();
   }
 
 
@@ -84,7 +76,9 @@ public:
   void delay_fire(int delay);
   void reset();
 
-  void reinitialize();
+  void resize_grid(int dimension);
+
+  void shuffle_grid();
 
 };
 
@@ -95,15 +89,14 @@ int main() {
 
   int timer = 1;
   
-  Maze game(40);
-  game.initialize_player(1, 0, 0);
+  Maze game;
 
   bool three = true;
   int expand = 3;
 
 
   char input;
-  while (game.done == false && cin >> input && input != 'q') {
+  while (game.done == false) {
 
     if ( !game._running ){
       do {
@@ -111,16 +104,26 @@ int main() {
         cout << "1. Start Game\n";
         cout << "2. Change Difficulty\n";
         cout << "3. Quit\n";
-
+        
+        cin >> input;
         switch(input) {
-          case 1: game._running = true;
-                  break;
-          case 2: break;
-          case 3: exit(0);
+          case '1': game._running = true;
+                    game.initialize_grid();
+                    game.initialize_player(1, 0, 0);
+                    game.print_grid();
+                    break;
+          case '2': break;
+          case '3': 
+              std::cout << "Good-bye!\n";
+              exit(0);
+              break;
         }
-      } while (cin >> input && input != 'q');
+      } while (input != '1' && cin >> input && input != 'q');
     }
-
+    else {
+      game.print_grid();
+    }
+    cin >> input;
     if (input == 'w') {
       // Move the player up.
       game.player_up();
@@ -139,7 +142,7 @@ int main() {
       game.reset();
     }
     if (input == 'e'){
-      game.reinitialize();
+      game.shuffle_grid();
     }
     timer = timer + 1;
 
@@ -186,7 +189,7 @@ int main() {
 // --------------------------------------------------------------------------
 
 
-void Maze::reinitialize() {
+void Maze::shuffle_grid() {
   // A string containing the possible
   // floor tiles.
   string possible = "......#####";
@@ -199,8 +202,6 @@ void Maze::reinitialize() {
       }
   }
 
-
-
   print_grid();
 }
 
@@ -208,6 +209,7 @@ void Maze::reset() {
   initialize_grid();
 
   initialize_player(player.speed , 0, 0);
+  print_grid();
 }
 
 
@@ -359,7 +361,12 @@ void Maze::check_for_win() {
   }
 }
 
-
+void Maze::resize_grid(int dimension) {
+  grid.resize(dimension);
+  for (auto& row : grid) {
+    row.resize(dimension);
+  }
+}
 
 // Initialize a random grid for the game map.
 // Try to make it solvable everytime?
@@ -381,6 +388,4 @@ void Maze::initialize_grid() {
     grid[0][0] = '.';
     grid[grid.size() - 1][grid.size() - 1] = '.';
     grid[0][grid.size() - 1] = 'f';
-
-    print_grid();
 }
